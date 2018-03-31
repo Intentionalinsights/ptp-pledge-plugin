@@ -10,12 +10,13 @@
 
 // $wpdb is in scope
 
-$config = require "config.php";
-
-$googleApiKey         = $config['googleApiKey'];
+$config       = require "config.php";
+$googleApiKey = $config['googleApiKey'];
 
 $pledgeTable          = $wpdb->prefix . "ptp_pledges";
 $pledgeDivisionsTable = $wpdb->prefix . "ptp_pledgeDivisions";
+
+$templatesDir = __DIR__ . "/templates/";
 
 
 foreach (glob("functions/*.php") as $file) {
@@ -62,8 +63,9 @@ foreach (glob("shortcodes/*.php") as $file) {
 
 function plugin_activated() {
     global $wpdb;
-    $pledgeTable = $wpdb->prefix . "ptp_pledges";
-    $pledgeDivisionsTable = $wpdb->prefix . "ptp_pledgeDivisions";
+    global $pledgeTable;
+    global $pledgeDivisionsTable;
+
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     //******************** Be sure to remove drop tables after initial run
@@ -186,51 +188,12 @@ function plugin_activated() {
         }
     }
  */
+}
 
-    }
 register_activation_hook( __FILE__, 'plugin_activated' );
 
 
 
-
-
-function pledgerSocialMediaLinkFields( ) {
-
-    ob_start(); ?>
-
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="linkText1">Text 1</label>
-                <input name="linkText1" id="linkText1" placeholder="Facebook" class="form-control" value="Facebook">
-            </div>
-            <div class="form-group col-sm-6">
-                <label for="linkUrl1">link 1</label>
-                <input name="linkUrl1" id="linkUrl1" placeholder="https://www.facebook.com/userName" class="form-control" value="https://www.facebook.com/">
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="linkText2">Text 2</label>
-                <input name="linkText2" id="linkText2" placeholder="LinkedIn" class="form-control" value="LinkedIn">
-            </div>
-            <div class="form-group col-sm-6">
-                <label for="linkUrl2">link 2</label>
-                <input name="linkUrl2" id="linkUrl2" placeholder="https://www.linkedin.com/in/userName" class="form-control" value="https://www.linkedin.com/in/">
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="linkText3">Text 3</label>
-                <input name="linkText3" id="linkText3" placeholder="My Website" class="form-control">
-            </div>
-            <div class="form-group col-sm-6">
-                <label for="linkUrl3">link 3</label>
-                <input name="linkUrl3" id="linkUrl3" placeholder="https://example.com" class="form-control" value="http://">
-            </div>
-        </div>
-    <?php $html = ob_get_clean();
-    return $html;
-}
 
 
 

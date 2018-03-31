@@ -13,6 +13,8 @@ if (!function_exists("ptp_pledge")) {
         global $pledgeTable;
         global $pledgeDivisionsTable;
 
+        global $templatesDir;
+
         $step = $_POST["step"] ;
         $key = $_POST["key"] ;
         $pledgeId = $_POST["pledgeId"] ;
@@ -446,7 +448,9 @@ if (!function_exists("ptp_pledge")) {
                         <label for="imageUrl">A link to a profile picture for use on the Public Figures page</label>
                         <input name="imageUrl" id="imageUrl" placeholder="https://example.com/profile_pic.jpg" class="form-control"  maxlength="200">
                     </div>
-                    <?php echo pledgerSocialMediaLinkFields(); ?>
+                    <?php
+                        include $templatesDir . "socialMediaLinkFields.php";
+                    ?>
                     <input type="hidden" name="category" id="category" value="<?php echo $_POST["category"]; ?>" />
                     <input type="hidden" name="pledgeId" id="pledgeId" value="<?php echo $pledgeId; ?>" />
                     <input type="hidden" name="key" id="key" value="<?php echo $key; ?>" />
@@ -510,10 +514,12 @@ if (!function_exists("ptp_pledge")) {
                     <label for="orgs">Organizations you are affiliated with (list as many as you would like)</label>
                     <input name="orgs"  id="orgs" class="form-control">
                 </div>
-                <?php if (isset($_POST['directory'])){?>
-                    You can list up to three links to your online presence to be displayed in the directory of signers
-                    <?php echo pledgerSocialMediaLinkFields();
-                }?>
+                <?php
+                    if (isset($_POST['directory'])) {
+                        echo "You can list up to three links to your online presence to be displayed in the directory of signers";
+                        include $templatesDir . "socialMediaLinkFields.php";
+                    }
+                ?>
 
                 <input type="hidden" name="category" id="category" value="<?php echo $_POST["category"]; ?>" />
                 <input type="hidden" name="pledgeId" id="pledgeId" value="<?php echo $pledgeId; ?>" />
