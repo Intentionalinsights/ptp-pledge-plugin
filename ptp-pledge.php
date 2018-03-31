@@ -10,6 +10,10 @@
 
 // $wpdb is in scope
 
+$config = require "config.php";
+
+$googleApiKey         = $config['googleApiKey'];
+
 $pledgeTable          = $wpdb->prefix . "ptp_pledges";
 $pledgeDivisionsTable = $wpdb->prefix . "ptp_pledgeDivisions";
 
@@ -292,8 +296,10 @@ function data_table( $db_data ) {
 
 function validateAddress() {
     global $wpdb;
-    $pledgeTable = $wpdb->prefix . "ptp_pledges";
-    $pledgeDivisionsTable = $wpdb->prefix . "ptp_pledgeDivisions";
+
+    global $googleApiKey;
+    global $pledgeTable;
+    global $pledgeDivisionsTable;
 
     $result = $wpdb->get_results ( "
         SELECT *
@@ -312,7 +318,7 @@ function validateAddress() {
 
 
         //Get normalized Address from google
-        $url = "https://www.googleapis.com/civicinfo/v2/representatives?key=******&address="
+        $url = "https://www.googleapis.com/civicinfo/v2/representatives?key={$googleApiKey}&address="
         . urlencode (
             $row->address1
             . " "
@@ -385,7 +391,10 @@ function validateAddress() {
 
 function latLongPull() {
     global $wpdb;
-    $pledgeTable = $wpdb->prefix . "ptp_pledges";
+
+    global $googleApiKey;
+    global $pledgeTable;
+
 
     $result = $wpdb->get_results ( "
         SELECT *
@@ -401,7 +410,7 @@ function latLongPull() {
     {
         echo "{{" . $row->pledgeId . "}}";
         //Get Lat Long google
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?key=******&address="
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?key={$googleApiKey}&address="
         . urlencode (
             // $row->address1
             // . " "
@@ -460,13 +469,15 @@ function latLongPull() {
 
 function ptpRegionCount( ) {
     global $wpdb;
-    $pledgeTable = $wpdb->prefix . "ptp_pledges";
+
+    global $googleApiKey;
+    global $pledgeTable;
 
     $result = $wpdb->get_results ( "
         SELECT (CASE ISNULL(vRegion) WHEN 1 THEN region ELSE vRegion END) as region,
             (CASE ISNULL(vCountry) WHEN 1 THEN country ELSE vCountry END) as country,
             COUNT(1) as counter
-        FROM `wp_ei4xkg_ptp_pledges` 
+        FROM $pledgeTable 
         GROUP BY (CASE ISNULL(vRegion) WHEN 1 THEN region ELSE vRegion END),
             (CASE ISNULL(vCountry) WHEN 1 THEN country ELSE vCountry END)
         LIMIT 5
@@ -475,7 +486,7 @@ function ptpRegionCount( ) {
     foreach ( $result as $row )
     {
         //Get Lat Long google
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?key=******&address="
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?key={$googleApiKey}&address="
         . urlencode (
             $row->region
             . " "
