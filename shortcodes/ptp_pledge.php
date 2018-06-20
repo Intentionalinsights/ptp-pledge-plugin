@@ -15,10 +15,10 @@ if (!function_exists("ptp_pledge")) {
 
         global $templatesDir;
 
-        $step = $_POST["step"] ;
-        $key = $_POST["key"] ;
+        $step     = $_POST["step"] ;
+        $key      = $_POST["key"] ;
         $pledgeId = $_POST["pledgeId"] ;
-        $toStep = "Start";
+        $toStep   = "Start";
         $category = $_POST["category"];
 
         // Receive data for "Start" step

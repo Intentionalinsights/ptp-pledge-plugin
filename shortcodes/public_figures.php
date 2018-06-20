@@ -21,39 +21,41 @@ if (!function_exists("public_figures_shortcode")) {
             ORDER BY created DESC
         ");
 
-        $html = "";
-        ob_start(); ?><Style>img.pFImage {max-width: 400px; width: auto; height: auto; max-height: 100px; float: left; padding-right: 5px;}</Style><?php $html .= ob_get_clean();
+        $html = "<style>img.pFImage {max-width: 400px; width: auto; height: auto; max-height: 100px; float: left; padding-right: 5px;}</style>";
 
         foreach ( $result as $row )
         {
-            ob_start(); ?>
-            <div class='publicFigure'>
-                <?php
-                if (empty($row->groupName)){
-                    echo "<h3>".$row->fName." ".$row->lName."</h3>";
-                } else {
-                    echo "<h3>".$row->groupName."</h3>";
-                }
-                if (substr( $row->linkUrl1, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false){
-                    echo "<a class='figureLink' href='" . $row->linkUrl1 . "'>". $row->linkText1 ."</a>";
-                }
-                if (substr( $row->linkUrl2, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false){
-                    echo "<a class='figureLink' href='" . $row->linkUrl2 . "'>". $row->linkText2 ."</a>";
-                }
-                if (substr( $row->linkUrl3, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false){
-                    echo "<a class='figureLink' href='" . $row->linkUrl3 . "'>". $row->linkText3 ."</a>";
-                }
-                if (substr( $row->imageUrl, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false){
-                    echo "<br/><img class='pFImage' src='" . $row->imageUrl . "'>";
-                }				?>
-                <p class='figureDescription'><?php echo $row->description ?></p>
-            </div>
-            <div style="clear:both;"></div>
-            <?php $html .= ob_get_clean();
-        }
-        return $html;
 
-        //return $output;
+            $html .= "<div class='publicFigure'>";
+
+            if (empty($row->groupName)) {
+                $html .= "<h3>" . $row->fName . " " . $row->lName . "</h3>";
+            } else {
+                $html .= "<h3>" . $row->groupName . "</h3>";
+            }
+
+            if (substr( $row->linkUrl1, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
+                $html .= "<a class='figureLink' href='" . $row->linkUrl1 . "'>". $row->linkText1 ."</a>";
+            }
+
+            if (substr( $row->linkUrl2, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
+                $html .= "<a class='figureLink' href='" . $row->linkUrl2 . "'>". $row->linkText2 ."</a>";
+            }
+
+            if (substr( $row->linkUrl3, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
+                $html .= "<a class='figureLink' href='" . $row->linkUrl3 . "'>". $row->linkText3 ."</a>";
+            }
+
+            if (substr( $row->imageUrl, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
+                $html .= "<br/><img class='pFImage' src='" . $row->imageUrl . "'>";
+            }
+
+            $html .= "<p class='figureDescription'>{$row->description}</p>
+            </div>
+            <div style='clear:both;'></div>";
+        }
+
+        return $html;
     }
 }
 

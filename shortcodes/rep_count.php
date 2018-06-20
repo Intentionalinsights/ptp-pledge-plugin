@@ -12,11 +12,13 @@ if (!function_exists("rep_count_shortcode")) {
         global $wpdb;
         global $pledgeDivisionsTable;
 
+        global $googleApiKey;
+
         ob_start();
 
         if (!empty($_GET['address'])) {
             //Get normalized Address from google
-            $url = "https://www.googleapis.com/civicinfo/v2/representatives?key=******&address="
+            $url = "https://www.googleapis.com/civicinfo/v2/representatives?key={$googleApiKey}&address="
                 . urlencode ( $_GET['address']	);
 
             $ch = curl_init();
