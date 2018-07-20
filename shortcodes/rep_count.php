@@ -197,7 +197,7 @@ if (!function_exists("rep_count_shortcode")) {
                         <label for="address">
                             Enter a US address to view:
                             <ul>
-                                <li>A list of all the elected representatives for that address</li>
+                                <li>A list of most of the elected representatives for that address</li>
                                 <li>The number of pledge-takers per elected representative</li>
                                 <li>The social media contacts for each representative, which you can use to encourage them to take the pledge</li>
                             </ul>
