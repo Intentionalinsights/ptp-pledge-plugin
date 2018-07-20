@@ -152,7 +152,7 @@ if (!function_exists("rep_count_shortcode")) {
                                                     <?php
                                                 } elseif ($channel->type == "Facebook") {
                                                     ?>
-                                                    <a class="s_facebook" href="https://facebook.com/<?php echo  $channel->id; ?> target="_blank""></a>
+                                                    <a class="s_facebook" href="https://facebook.com/<?php echo  $channel->id; ?>" target="_blank""></a>
                                                     <?php
                                                 } elseif ($channel->type == "YouTube") {
                                                     ?>
