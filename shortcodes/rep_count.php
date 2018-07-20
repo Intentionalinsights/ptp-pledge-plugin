@@ -71,6 +71,7 @@ if (!function_exists("rep_count_shortcode")) {
 
                     ?>
                     <h2>Number of pledge-takers per representative for <?php echo $_GET['address']; ?></h2>
+                    <p></p>
                     <style>
                         .s_twitter:before{
                             content: '\f202';
@@ -182,6 +183,7 @@ if (!function_exists("rep_count_shortcode")) {
                     </div class="row">
 
                     <br>
+                    <hr>
                     <br><?php
                 }
             }
@@ -192,8 +194,16 @@ if (!function_exists("rep_count_shortcode")) {
             <div class="container">
                 <div class="row">
                     <div class="form-group">
-                        <label for="address">Enter a US address to find the number of pledge-takers per representative for this address</label>
-                        <input type="text" name="address" id="address" class="form-control" autocomplete="address" value="<?php echo $_GET['address']; ?>">
+                        <label for="address">
+                            Enter a US address to view:
+                            <ul>
+                                <li>A list of all the elected representatives for that address</li>
+                                <li>The number of pledge-takers per elected representative</li>
+                                <li>The social media contacts for each representative, which you can use to encourage them to take the pledge</li>
+                            </ul>
+                        </label>
+                        <input type="text" name="address" id="address" placeholder="Enter a US Address" class="form-control" autocomplete="address" value="<?php echo htmlentities($_GET['address']); ?>">
+                        <em style="font-weight: normal;">(Note: this function does not show whether the elected representative took the pledge or not)</em>
                     </div>
                 </div>
                 <div class="row">
