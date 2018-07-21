@@ -16,44 +16,51 @@ if (!function_exists("public_figures_shortcode")) {
             FROM $pledgeTable
             WHERE (category='Official'
             OR category='Group'
-            OR category='Figure') 
+            OR category='Figure')
             and `show` = true
             ORDER BY created DESC
         ");
 
-        $html = "<style>img.pFImage {max-width: 400px; width: auto; height: auto; max-height: 100px; float: left; padding-right: 5px;}</style>";
+        $publicFigures = [];
 
         foreach ( $result as $row )
         {
+            $figure = [
+                'name'        => ($row->groupName) ? $row->groupName : $row->fName . ' ' . $row->lName,
+                'category'    => $row->category,
+                'description' => $row->description,
+                'links'       => [],
+                'imageUrl'    => filter_var($row->imageUrl, FILTER_VALIDATE_URL),
+            ];
 
-            $html .= "<div class='publicFigure'>";
-
-            if (empty($row->groupName)) {
-                $html .= "<h3>" . $row->fName . " " . $row->lName . "</h3>";
-            } else {
-                $html .= "<h3>" . $row->groupName . "</h3>";
+            $url1 = filter_var($row->linkUrl1, FILTER_VALIDATE_URL);
+            if ($url1) {
+                $figure['links'][] = [
+                    'url'  => $url1,
+                    'text' => $row->linkText1,
+                ];
             }
 
-            if (substr( $row->linkUrl1, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
-                $html .= "<a class='figureLink' href='" . $row->linkUrl1 . "'>". $row->linkText1 ."</a>";
+            $url2 = filter_var($row->linkUrl2, FILTER_VALIDATE_URL);
+            if ($url2) {
+                $figure['links'][] = [
+                    'url'  => $url2,
+                    'text' => $row->linkText2,
+                ];
             }
 
-            if (substr( $row->linkUrl2, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
-                $html .= "<a class='figureLink' href='" . $row->linkUrl2 . "'>". $row->linkText2 ."</a>";
+            $url3 = filter_var($row->linkUrl3, FILTER_VALIDATE_URL);
+            if ($url3) {
+                $figure['links'][] = [
+                    'url'  => $url3,
+                    'text' => $row->linkText3,
+                ];
             }
 
-            if (substr( $row->linkUrl3, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
-                $html .= "<a class='figureLink' href='" . $row->linkUrl3 . "'>". $row->linkText3 ."</a>";
-            }
-
-            if (substr( $row->imageUrl, 0, 4 ) === "http" && strpos($row->linkUrl1, ' ') == false) {
-                $html .= "<br/><img class='pFImage' src='" . $row->imageUrl . "'>";
-            }
-
-            $html .= "<p class='figureDescription'>{$row->description}</p>
-            </div>
-            <div style='clear:both;'></div>";
+            $publicFigures[] = $figure;
         }
+
+        $html = include __DIR__ . '/../templates/publicFigure.php';
 
         return $html;
     }
