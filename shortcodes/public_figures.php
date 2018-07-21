@@ -60,7 +60,11 @@ if (!function_exists("public_figures_shortcode")) {
             $publicFigures[] = $figure;
         }
 
-        $html = include __DIR__ . '/../templates/publicFigure.php';
+        ob_start();
+
+        include __DIR__ . '/../templates/publicFigure.php';
+
+        $html = ob_get_clean();
 
         return $html;
     }
