@@ -100,18 +100,18 @@ $(function() {
 
     <div class="publicFigure category-<?php echo $figure['category']; ?>" data-category="<?php echo $figure['category']; ?>">
 
-        <h3><?php echo $figure['name']; ?></h3>
+        <h3><?php echo safe_html($figure['name']); ?></h3>
 
         <?php foreach ($figure['links'] as $link): ?>
-            <a class='figureLink' href='<?php echo $link['url']; ?>'><?php echo $link['text']; ?></a>
+            <a class='figureLink' href='<?php echo safe_html($link['url']); ?>'><?php echo safe_html($link['text']); ?></a>
         <?php endforeach; ?>
 
         <?php if ($figure['imageUrl']): ?>
             <br/>
-            <img class='pFImage' src='<?php echo $figure['imageUrl']; ?>' alt="<?php echo $figure['name']; ?>">
+            <img class='pFImage' src='<?php echo safe_html($figure['imageUrl']); ?>' alt="<?php echo safe_html($figure['name']); ?>">
         <?php endif; ?>
 
-        <p class='figureDescription'><?php echo $figure['description']; ?></p>
+        <p class='figureDescription'><?php echo safe_html($figure['description']); ?></p>
     </div>
     <div style='clear:both;'></div>
 
