@@ -18,7 +18,8 @@ img.pFImage {
     padding-right: 5px;
 }
 
-.d-none {
+.category-d-none,
+.name-d-none {
     display: none;
 }
 
@@ -42,7 +43,7 @@ $(function() {
     $('#nameFilter').keyup(function() {
         var query = $(this).val();
         if (!query) {
-            pledgeTakerContainers.show();
+            pledgeTakerContainers.removeClass('name-d-none');
             return;
         }
         var regex = new RegExp(query, 'i');
@@ -50,10 +51,10 @@ $(function() {
             var jContainer = $(this);
             var searchContent = jContainer.find('h3').html();
             if (!regex.test(searchContent)) {
-                jContainer.hide();
+                jContainer.addClass('name-d-none');
                 return;
             }
-            jContainer.show();
+            jContainer.removeClass('name-d-none');
         });
     });
 
@@ -62,13 +63,13 @@ $(function() {
         var filter = $(this).val();
 
         if (!filter) {
-            pledgeTakerContainers.removeClass('d-none');
+            pledgeTakerContainers.removeClass('category-d-none');
             return;
         }
 
-        pledgeTakerContainers.addClass('d-none');
+        pledgeTakerContainers.addClass('category-d-none');
 
-        containerGroups[filter].removeClass('d-none');
+        containerGroups[filter].removeClass('category-d-none');
     });
 }
 );
