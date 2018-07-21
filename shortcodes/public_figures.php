@@ -5,6 +5,22 @@
  * @since       2018-03-30
  */
 
+if (!defined(SAFE_HTML_FLAGS)) {
+    define('SAFE_HTML_FLAGS', ENT_COMPAT | ENT_HTML401);
+}
+
+if (!defined(SAFE_HTML_CHARSET)) {
+    define('SAFE_HTML_CHARSET', ini_get('default_charset'));
+}
+
+if (!function_exists('safe_html')) {
+
+    function safe_html($content) {
+        return htmlspecialchars($content, SAFE_HTML_FLAGS, SAFE_HTML_CHARSET, false);
+    }
+
+}
+
 if (!function_exists("public_figures_shortcode")) {
 
     function public_figures_shortcode($atts, $content = "") {
@@ -62,7 +78,7 @@ if (!function_exists("public_figures_shortcode")) {
 
         ob_start();
 
-        include __DIR__ . '/../templates/publicFigure.php';
+        include __DIR__ . '/../templates/publicFigures.php';
 
         $html = ob_get_clean();
 
