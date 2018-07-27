@@ -43,6 +43,7 @@ if (!function_exists("public_figures_shortcode")) {
         {
             $figure = [
                 'name'        => ($row->groupName) ? $row->groupName : $row->fName . ' ' . $row->lName,
+                'prominent'   => (bool) $row->prominent,
                 'category'    => $row->category,
                 'description' => $row->description,
                 'links'       => [],

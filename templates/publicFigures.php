@@ -19,12 +19,21 @@ img.pFImage {
 }
 
 .category-d-none,
-.name-d-none {
+.name-d-none,
+.prominent-d-none {
     display: none;
 }
 
 .filters div {
     margin-top: 15px;
+}
+
+.prominent {
+    /*background-color: #999;*/
+}
+
+.prominent h3 {
+    color: goldenrod;
 }
 
 </style>
@@ -35,9 +44,10 @@ $(function() {
     var pledgeTakerContainers = $(".publicFigure");
 
     var containerGroups = {
-        Official: $('.category-Official'),
-        Group   : $('.category-Group'),
-        Figure  : $('.category-Figure')
+        Official  : $('.category-Official'),
+        Group     : $('.category-Group'),
+        Figure    : $('.category-Figure'),
+        Prominent : $('.prominent')
     };
 
     $('#nameFilter').keyup(function() {
@@ -71,6 +81,17 @@ $(function() {
 
         containerGroups[filter].removeClass('category-d-none');
     });
+
+    $("#prominentFilter").change(function() {
+        if ($(this).is(':checked')) {
+            pledgeTakerContainers.addClass('prominent-d-none');
+            containerGroups.Prominent.removeClass('prominent-d-none');
+
+            return;
+        }
+
+        pledgeTakerContainers.removeClass('prominent-d-none');
+    });
 }
 );
 </script>
@@ -92,15 +113,22 @@ $(function() {
         <input type='text' id='nameFilter' class='form-control' placeholder='Search by Name'>
     </div>
 
+    <div class="col-xs-12">
+        <label for="prominentFilter">
+            <input type="checkbox" id="prominentFilter">
+            Show only Pro-Truth Pledge Influencers
+        </label>
+    </div>
+
 </div>
 
 <hr>
 
 <?php foreach ($publicFigures as $figure): ?>
 
-    <div class="publicFigure category-<?php echo $figure['category']; ?>" data-category="<?php echo $figure['category']; ?>">
+    <div class="publicFigure category-<?php echo $figure['category']; ?> <?php echo ($figure['prominent']) ? 'prominent' : ''; ?>" data-category="<?php echo $figure['category']; ?>">
 
-        <h3><?php echo safe_html($figure['name']); ?></h3>
+        <h3><?php echo ($figure['prominent']) ? '<span class="glyphicon glyphicon-star"></span> ' : ''?><?php echo safe_html($figure['name']); ?></h3>
 
         <?php foreach ($figure['links'] as $link): ?>
             <a class='figureLink' href='<?php echo safe_html($link['url']); ?>'><?php echo safe_html($link['text']); ?></a>
