@@ -116,7 +116,7 @@ $(function() {
     <div class="col-xs-12">
         <label for="prominentFilter">
             <input type="checkbox" id="prominentFilter">
-            Show only prominent Pledge-Takers
+            Show only Pro-Truth Pledge Influencers
         </label>
     </div>
 
