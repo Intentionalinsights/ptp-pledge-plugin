@@ -34,7 +34,7 @@ if (!function_exists("public_figures_shortcode")) {
             OR category='Group'
             OR category='Figure')
             and `show` = true
-            ORDER BY created DESC
+            ORDER BY prominent DESC, created DESC
         ");
 
         $publicFigures = [];
