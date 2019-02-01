@@ -16,6 +16,7 @@ function validateAddress() {
         SELECT *
         FROM $pledgeTable
         WHERE addressValidated IS NULL
+        ORDER BY pledgeId  DESC
         LIMIT 10
     ");
     //addressValidated = null

@@ -17,6 +17,7 @@ function latLongPull() {
         FROM $pledgeTable
         WHERE latLongPulled IS NULL
         AND (city > '' or zip >'')
+        ORDER BY pledgeId  DESC
         LIMIT 10
     ");
     echo "<br>{{lat-long}}";
