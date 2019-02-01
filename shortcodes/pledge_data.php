@@ -47,8 +47,8 @@ if (!function_exists("pledge_data")) {
         </div>
         <?php $html = ob_get_clean();
 
-        //validateAddress();
-        //latLongPull();
+        validateAddress();
+        latLongPull();
 
         //return "";
         return $html;
