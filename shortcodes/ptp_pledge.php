@@ -557,10 +557,10 @@ if (!function_exists("ptp_pledge")) {
             <br><br>
             <div style="clear:both;"></div>
             <?php $html = ob_get_clean();
+            validateAddress();
+            latLongPull();
         }
 
-        validateAddress();
-        latLongPull();
 
         return $html;
 

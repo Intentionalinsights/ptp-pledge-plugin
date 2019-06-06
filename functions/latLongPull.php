@@ -20,7 +20,7 @@ function latLongPull() {
         ORDER BY pledgeId  DESC
         LIMIT 10
     ");
-    echo "<br>{{lat-long}}";
+    //echo "<br>{{lat-long}}";
     //echo var_dump($result);
 
     foreach ( $result as $row )
