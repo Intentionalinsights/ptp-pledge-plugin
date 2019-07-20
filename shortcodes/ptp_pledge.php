@@ -358,10 +358,10 @@ if (!function_exists("ptp_pledge")) {
                            placeholder="name@example.com" required autocomplete="email" maxlength="100">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="display:none;">
                     <div class="form-check form-check-inline">
                         <label class="form-check-label" style="display: inline;">
-                            <input class="form-check-input" type="checkbox" name="directory" value="directory" checked>
+                            <input class="form-check-input" type="checkbox" name="directory" value="directory">
                             I want to be in the public directory of signers
                         </label> (We will only post your name and social media links you provide)
                     </div>
@@ -376,7 +376,7 @@ if (!function_exists("ptp_pledge")) {
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="display:none;">
                     <label>Notifications</label>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label" style="display: inline;">
@@ -386,7 +386,7 @@ if (!function_exists("ptp_pledge")) {
                     </div>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label"  style="display: inline;">
-                            <input class="form-check-input" type="checkbox" name="emailAlerts" value="emailAlerts" checked> Email Action Alerts
+                            <input class="form-check-input" type="checkbox" name="emailAlerts" value="emailAlerts"> Email Action Alerts
                         </label>(
                         important to ensure we can hold public figures accountable)
                     </div>
