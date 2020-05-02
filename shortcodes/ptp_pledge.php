@@ -337,7 +337,7 @@ if (!function_exists("ptp_pledge")) {
         if ( $toStep == "Start") {
             ob_start(); ?>
             <h1>Take the Pro-Truth Pledge</h1>
-            <form method="post" >
+            <form method="post" action="/take-the-pro-truth-pledge/">
                 <div class="row">
                     <div class="form-group col-sm-6" >
                         <label for="fName">First Name</label>
