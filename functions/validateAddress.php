@@ -23,7 +23,7 @@ function validateAddress() {
 
     foreach ( $result as $row )
     {
-        echo "{{" . $row->pledgeId . "}}";
+        //echo "{{" . $row->pledgeId . "}}";
         //echo var_dump($row->addressValidated);
 
 

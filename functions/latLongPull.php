@@ -25,7 +25,7 @@ function latLongPull() {
 
     foreach ( $result as $row )
     {
-        echo "{{" . $row->pledgeId . "}}";
+        //echo "{{" . $row->pledgeId . "}}";
         //Get Lat Long google
         $url = "https://maps.googleapis.com/maps/api/geocode/json?key={$googleApiKey}&address="
             . urlencode (
