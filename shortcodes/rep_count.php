@@ -45,10 +45,10 @@ if (!function_exists("rep_count_shortcode")) {
                         FROM $pledgeDivisionsTable
                         WHERE $where
                         GROUP BY DivisionId
-                        LIMIT 5
                     ", ARRAY_A);
 
                     //echo data_table( $query );
+                    //var_dump($where);
 
                     //build PledgeCount dictionary
                     $divisionPledgeCountDict = [];
@@ -172,6 +172,7 @@ if (!function_exists("rep_count_shortcode")) {
                                         }
 
                                         ?>
+                                        <div style="display:none;"> <?php var_dump($rep); ?></div>
                                         <div style="font-weight: bolder;"><?php echo $rep->name; ?></div>
                                         <div style="font-size: smaller;"><?php echo $rep->office->name; ?></div>
                                     </div>
