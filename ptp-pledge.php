@@ -11,6 +11,9 @@
 // $wpdb is in scope
 $config       = require "config.php";
 $googleApiKey = $config['googleApiKey'];
+$emailApiKey = $config['emailApiKey'];
+$emailApiServer = $config['emailApiServer'];
+$emailListId = $config['emailListId'];
 
 $pledgeTable          = $wpdb->prefix . "ptp_pledges";
 $pledgeDivisionsTable = $wpdb->prefix . "ptp_pledgeDivisions";

@@ -198,6 +198,8 @@ if (!function_exists("ptp_pledge")) {
                 wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
             }
 
+            addToEmailList($_POST["email"], $_POST["fName"], $_POST["lName"]);
+
             //wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $emailBody );
 
 

@@ -9,4 +9,7 @@
 
 return [
     'googleApiKey' => '',
+    'emailApiKey' => '',
+    'emailApiServer' => '',
+    'emailListId' => '',
 ];
