@@ -28,14 +28,13 @@ if (!function_exists("public_figures_shortcode")) {
         global $pledgeTable;
 
         $result = $wpdb->get_results ( "
-            SELECT *
+            SELECT fName, lName, groupName, prominent, category, pledgeId
             FROM $pledgeTable
             WHERE (category='Official'
             OR category='Group'
             OR category='Figure')
             and `show` = true
             ORDER BY prominent DESC, created DESC
-            LIMIT 1000
         ");
 
         $publicFigures = [];
@@ -46,35 +45,8 @@ if (!function_exists("public_figures_shortcode")) {
                 'name'        => ($row->groupName) ? $row->groupName : $row->fName . ' ' . $row->lName,
                 'prominent'   => (bool) $row->prominent,
                 'category'    => $row->category,
-                'description' => $row->description,
-                'links'       => [],
-                'imageUrl'    => filter_var($row->imageUrl, FILTER_VALIDATE_URL),
+                'pledgeId'    => $row->pledgeId
             ];
-
-            $url1 = filter_var($row->linkUrl1, FILTER_VALIDATE_URL);
-            if ($url1) {
-                $figure['links'][] = [
-                    'url'  => $url1,
-                    'text' => $row->linkText1,
-                ];
-            }
-
-            $url2 = filter_var($row->linkUrl2, FILTER_VALIDATE_URL);
-            if ($url2) {
-                $figure['links'][] = [
-                    'url'  => $url2,
-                    'text' => $row->linkText2,
-                ];
-            }
-
-            $url3 = filter_var($row->linkUrl3, FILTER_VALIDATE_URL);
-            if ($url3) {
-                $figure['links'][] = [
-                    'url'  => $url3,
-                    'text' => $row->linkText3,
-                ];
-            }
-
             $publicFigures[] = $figure;
         }
 

@@ -18,22 +18,26 @@ img.pFImage {
     padding-right: 5px;
 }
 
-.category-d-none,
-.name-d-none,
-.prominent-d-none {
-    display: none;
+.publicFigure {
+    display: inline-block;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
 }
 
 .filters div {
     margin-top: 15px;
 }
 
-.prominent {
-    /*background-color: #999;*/
+.prominent a{
+    color: goldenrod;
 }
 
-.prominent h3 {
-    color: goldenrod;
+.category-d-none,
+.name-d-none,
+.prominent-d-none {
+    display: none;
 }
 
 </style>
@@ -59,7 +63,7 @@ $(function() {
         var regex = new RegExp(query, 'i');
         pledgeTakerContainers.each(function() {
             var jContainer = $(this);
-            var searchContent = jContainer.find('h3').html();
+            var searchContent = jContainer[0].innerText;
             if (!regex.test(searchContent)) {
                 jContainer.addClass('name-d-none');
                 return;
@@ -126,21 +130,17 @@ $(function() {
 
 <?php foreach ($publicFigures as $figure): ?>
 
-    <div class="publicFigure category-<?php echo $figure['category']; ?> <?php echo ($figure['prominent']) ? 'prominent' : ''; ?>" data-category="<?php echo $figure['category']; ?>">
-
-        <h3><?php echo ($figure['prominent']) ? '<span class="glyphicon glyphicon-star"></span> ' : ''?><?php echo safe_html($figure['name']); ?></h3>
-
-        <?php foreach ($figure['links'] as $link): ?>
-            <a class='figureLink' href='<?php echo safe_html($link['url']); ?>'><?php echo safe_html($link['text']); ?></a>
-        <?php endforeach; ?>
-
-        <?php if ($figure['imageUrl']): ?>
-            <br/>
-            <img class='pFImage' src='<?php echo safe_html($figure['imageUrl']); ?>' alt="<?php echo safe_html($figure['name']); ?>">
-        <?php endif; ?>
-
-        <p class='figureDescription'><?php echo safe_html($figure['description']); ?></p>
+    <div 
+        class="publicFigure category-<?php echo $figure['category']; ?> 
+        <?php echo ($figure['prominent']) ? 'prominent' : ''; ?>" 
+        data-category="<?php echo $figure['category']; ?>"
+    >
+        <a href="/public-figure-signed-pledge/?pledgeId=<?php echo $figure['pledgeId']; ?>">
+            <?php echo ($figure['prominent']) ? '<span class="glyphicon glyphicon-star"></span> ' : ''?>
+            <?php echo safe_html($figure['name']); ?>
+        </a>
     </div>
-    <div style='clear:both;'></div>
-
 <?php endforeach; ?>
+<br>
+<br>
+<br>
