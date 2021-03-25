@@ -35,6 +35,7 @@ if (!function_exists("public_figures_shortcode")) {
             OR category='Figure')
             and `show` = true
             ORDER BY prominent DESC, created DESC
+            LIMIT 1000
         ");
 
         $publicFigures = [];
