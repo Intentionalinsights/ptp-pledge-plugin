@@ -20,103 +20,181 @@ if (!function_exists("ptp_pledge")) {
         $pledgeId = $_POST["pledgeId"] ;
         $toStep   = "Start";
         $category = $_POST["category"];
+        $captcha  = $_POST["g-recaptcha-response"];
 
         // Receive data for "Start" step
         if ( $step == "Start") {
-            $key = base_convert(time(),10,36) . base_convert(mt_rand(1000,9999),10,36);
 
-            $wpdb->insert(
-                $pledgeTable,
-                array(
-                    'fName' => strip_tags($_POST["fName"], ""),
-                    'lName' => strip_tags($_POST["lName"], ""),
-                    'email' => strip_tags($_POST["email"], ""),
-                    'volunteer' => isset($_POST['volunteer']),
-                    'directory' => isset($_POST['directory']),
-                    'emailList' => isset($_POST['emailList']),
-                    'emailAlerts' => isset($_POST['emailAlerts']),
-                    'category' => strip_tags($_POST["category"], ""),
-                    'step' => strip_tags($_POST["step"], ""),
-                    'key' => $key
-                )
-            );
+            if ( $captcha == "") { // Chatcha error
+                ob_start(); ?>
+                <?php
+                //echo var_dump(get_post_meta(132));
+                ?>
+                <h2>Please hit the back button and fill out the Captcha to reduce spam.</h2>
+                <?php $html = ob_get_clean();
+                return $html;
+            } else {
+                $key = base_convert(time(),10,36) . base_convert(mt_rand(1000,9999),10,36);
 
-            $pledgeId = $wpdb->insert_id;
+                $wpdb->insert(
+                    $pledgeTable,
+                    array(
+                        'fName' => strip_tags($_POST["fName"], ""),
+                        'lName' => strip_tags($_POST["lName"], ""),
+                        'email' => strip_tags($_POST["email"], ""),
+                        'volunteer' => isset($_POST['volunteer']),
+                        'directory' => isset($_POST['directory']),
+                        'emailList' => isset($_POST['emailList']),
+                        'emailAlerts' => isset($_POST['emailAlerts']),
+                        'category' => strip_tags($_POST["category"], ""),
+                        'step' => strip_tags($_POST["step"], ""),
+                        'key' => $key
+                    )
+                );
 
-            if ($category == "Public"){
-                if (isset($_POST['volunteer'])){ //Violunteer
-                    $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Thanks for Your Interest in Helping With the Pro-Truth Pledge";
-                    ob_start(); ?>
-                    <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
-                    <p></p>
-                    <p>Thanks for taking the Pro-Truth Pledge (PTP) and I am glad that you indicated that <b>you want to help out with the pledge</b>, either when signing up online and leaving checking the box “I want to help with the Pro-Truth Pledge” or by signing up in person and marking the column in the sign-up sheet about helping out. If any of this was by mistake, and you did not intend to help out, please reply to this email to let me know and I will not bother you again!</p>
-                    <p></p>
-                    <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
-                    <p></p>
-                    <ul>
-                        <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
-                        <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
-                        <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
-                        <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
-                        <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
-                        <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
-                        <li>I will sign you up to the Intentional Insights Insiders Google Group (a type of email list) of Intentional Insights. Please add its email, <a href="mailto:intentional-insights-insiders@googlegroups.com">intentional-insights-insiders@googlegroups.com</a>, to your safe senders/contacts list. Please do the same for <a href="mailto:gleb@intentionalinsights.org">gleb@intentionalinsights.org</a>, <a href="mailto:info@intentionalinsighs.org">info@intentionalinsighs.org</a>, and <a href="mailto:info@protruthpledge.org">info@protruthpledge.org</a>.</li>
-                        <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, which are about the pledge in particular, and the more broad <a href="http://intentionalinsights.org/category/rational_politics/">political-themed blogs</a> on the website of Intentional Insights.</li>
-                    </ul>
-                    <p></p>
-                    <p style="text-align: center;"><b>Advancing the Pro-Truth Pledge</b></p>
-                    <p></p>
-                    <ul>
-                        <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
-                    </ul>
-                    <p></p>
-                    <ul>
-                        <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
-                    </ul>
-                    <p></p>
-                    <p style="text-align: center;"><b>Next Steps</b></p>
-                    <p></p>
-                    <p>Let me know which combination of these fits your interests. If I don’t hear from you, I’ll check in later from a different email address in case my email got stuck in your spam filters.</p>
-                    <p></p>
-                    <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
-                    <p></p>
-                    <p>Please let me know any questions you might have. Look forward to collaborating with you, and I’m excited you’re getting involved in fighting lies and promoting truth in politics and other life areas!</p>
-                    <p></p>
-                    <p>Truthfully Yours,</p>
-                    <p></p>
-                    <p>Gleb</p>
-                    <p></p>
-                    <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
-                    <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
-                    <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
-                    <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
-                    <p>Unsubscribe: This is a confirmation email. Future emails will include an unsubscribe link.</p>
-                    <?php $html = ob_get_clean();
-                    wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
-                } elseif (isset($_POST['emailList'])){ //Just Email List
+                $pledgeId = $wpdb->insert_id;
+
+                if ($category == "Public"){
+                    if (isset($_POST['volunteer'])){ //Violunteer
+                        $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Thanks for Your Interest in Helping With the Pro-Truth Pledge";
+                        ob_start(); ?>
+                        <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
+                        <p></p>
+                        <p>Thanks for taking the Pro-Truth Pledge (PTP) and I am glad that you indicated that <b>you want to help out with the pledge</b>, either when signing up online and leaving checking the box “I want to help with the Pro-Truth Pledge” or by signing up in person and marking the column in the sign-up sheet about helping out. If any of this was by mistake, and you did not intend to help out, please reply to this email to let me know and I will not bother you again!</p>
+                        <p></p>
+                        <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
+                        <p></p>
+                        <ul>
+                            <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
+                            <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
+                            <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
+                            <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
+                            <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
+                            <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
+                            <li>I will sign you up to the Intentional Insights Insiders Google Group (a type of email list) of Intentional Insights. Please add its email, <a href="mailto:intentional-insights-insiders@googlegroups.com">intentional-insights-insiders@googlegroups.com</a>, to your safe senders/contacts list. Please do the same for <a href="mailto:gleb@intentionalinsights.org">gleb@intentionalinsights.org</a>, <a href="mailto:info@intentionalinsighs.org">info@intentionalinsighs.org</a>, and <a href="mailto:info@protruthpledge.org">info@protruthpledge.org</a>.</li>
+                            <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, which are about the pledge in particular, and the more broad <a href="http://intentionalinsights.org/category/rational_politics/">political-themed blogs</a> on the website of Intentional Insights.</li>
+                        </ul>
+                        <p></p>
+                        <p style="text-align: center;"><b>Advancing the Pro-Truth Pledge</b></p>
+                        <p></p>
+                        <ul>
+                            <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
+                        </ul>
+                        <p></p>
+                        <ul>
+                            <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
+                        </ul>
+                        <p></p>
+                        <p style="text-align: center;"><b>Next Steps</b></p>
+                        <p></p>
+                        <p>Let me know which combination of these fits your interests. If I don’t hear from you, I’ll check in later from a different email address in case my email got stuck in your spam filters.</p>
+                        <p></p>
+                        <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
+                        <p></p>
+                        <p>Please let me know any questions you might have. Look forward to collaborating with you, and I’m excited you’re getting involved in fighting lies and promoting truth in politics and other life areas!</p>
+                        <p></p>
+                        <p>Truthfully Yours,</p>
+                        <p></p>
+                        <p>Gleb</p>
+                        <p></p>
+                        <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
+                        <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
+                        <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
+                        <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
+                        <p>Unsubscribe: This is a confirmation email. Future emails will include an unsubscribe link.</p>
+                        <?php $html = ob_get_clean();
+                        wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
+                    } elseif (isset($_POST['emailList'])){ //Just Email List
+                        $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Thanks for Taking the Pro-Truth Pledge";
+                        ob_start(); ?>
+                        <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
+                        <p></p>
+                        <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). Glad that you want to fight lies and promote truth in politics and other areas of public discourse!</p>
+                        <p></p>
+                        <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
+                        <p></p>
+                        <ul>
+                            <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
+                            <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
+                            <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
+                            <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
+                            <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
+                            <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
+                            <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, which are about the pledge in particular, and the more broad <a href="http://intentionalinsights.org/category/rational_politics/">political-themed blogs</a> on the website of Intentional Insights.</li>
+                            <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
+                            <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
+                        </ul>
+                        <p></p>
+                        <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
+                        <p></p>
+                        <p>Please let me know any questions you might have. Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
+                        <p></p>
+                        <p>Truthfully Yours,</p>
+                        <p></p>
+                        <p>Gleb</p>
+                        <p></p>
+                        <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
+                        <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
+                        <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
+                        <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
+                        <p>Unsubscribe: This is a confirmation email. Future emails will include an unsubscribe link.</p>
+                        <?php $html = ob_get_clean();
+                        wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
+                    } else { //Opted Out
+                        $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Confirmation of taking the Pro-Truth Pledge";
+                        ob_start(); ?>
+                        <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
+                        <p></p>
+                        <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). We are glad that you want to fight lies and promote truth in politics and other areas of public discourse! </p>
+                        <p></p>
+                        <p>This email is to confirm you took the pledge, but since you indicated you do not want to receive notifications, we will not send you any more emails. If you change your mind, you can always sign up for our newsletter at <a href="http://eepurl.com/cVFxxv">this link</a>. Signing up to the newsletter is valuable to incentivize politicians and other public figures to take the pledge, as they will see that our communication reaches more people, and thus has a stronger impact on the public discourse.</p>
+                        <p></p>
+                        <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
+                        <p></p>
+                        <ul>
+                            <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
+                            <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
+                            <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
+                            <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
+                            <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
+                            <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
+                            <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, especially <a href="https://www.protruthpledge.org/category/activism/">these activism-themed blogs</a>, about the pledge, and also more broad rational politics-themed blog on <a href="http://intentionalinsights.org/category/rational_politics/">this section</a> of the Intentional Insights website.</li>
+                            <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
+                            <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
+                        </ul>
+                        <p></p>
+                        <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
+                        <p></p>
+                        <p>Please let me know any questions you might have. We will not send you any more emails, unless you sign up for our newsletter at <a href="http://eepurl.com/cVFxxv">this link</a>. Please let me know any questions you might have. Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
+                        <p></p>
+                        <p>Truthfully Yours,</p>
+                        <p></p>
+                        <p>Gleb</p>
+                        <p></p>
+                        <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
+                        <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
+                        <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
+                        <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
+                        <p>Unsubscribe: This is just a confirmation email. There will be no future emails. There is no need to unsubscribe.</p>
+                        <?php $html = ob_get_clean();
+                        wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
+                    }
+                } else { //Public Figures
                     $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Thanks for Taking the Pro-Truth Pledge";
                     ob_start(); ?>
                     <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
                     <p></p>
-                    <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). Glad that you want to fight lies and promote truth in politics and other areas of public discourse!</p>
+                    <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). Glad that you as a public figure want to fight lies and promote truth in politics and other areas of public discourse!</p>
+                    <p> </p>
+                    <p>Here is <b>something you can do immediately </b>to help spread the message about fighting lies and protecting truth<b> </b>and also help you get the full benefit of being recognized as publicly committing to truth-oriented behaviors: please<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse"> post on Facebook</a> and<a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge"> on Twitter</a> about taking the pledge, if you use those social media. Next, add the<a href="https://www.protruthpledge.org/website-badge-seal/"> Pro-Truth Pledge badge</a> to your website as Peter Singer did on<a href="http://www.petersinger.info/"> his website</a>. If you use Facebook, please add<a href="https://www.facebook.com/ProTruthPledge/photos/a.263914657431697.1073741828.195264327630064/264345110721985/?type=3&amp;theater"> this Facebook Frame</a> to your Facebook profile, and<a href="https://twibbon.com/support/pro-truth-pledge-2/twitter"> this Twibbon</a> to your Twitter profile if you use Twitter (please mark the Facebook Frame as "permanent" as the main point of the frame is to show others that you took the pledge and are comfortable being held publicly accountable for your words). For your LinkedIn profile, add that you are a “Signer” of the<a href="https://www.linkedin.com/company/25068392/"> Pro-Truth Pledge LinkedIn organization</a>. Click the “+” button on your experience section, put in “Signer” as title, choose “Pro-Truth Pledge” as the organization, put in your date of signing, and in the description state “I have taken the Pro-Truth Pledge at ProTruthPledge.org: please hold me accountable.” If you have other relevant social media venues, please add the same statement there. Finally, please read and take steps in<a href="https://www.protruthpledge.org/how-public-figures-can-get-maximum-benefit-from-taking-the-pro-truth-pledge/"> this blog</a> about how public figures like yourself can make the most difference in advancing the fight against fake news and political deception, while also getting the maximum benefit for their reputation of taking the PTP. </p>
+                    <p> </p>
+                    <p>Have you<b> filled in your full profile</b> on the<a href="https://www.protruthpledge.org/public-figures-signed-pledge/"> Pro-Truth Pledge public figures page</a>? We find that people who provide a paragraph about why they took the pledge, their photographs, and links to their online venues – websites, social media, articles about them, etc. – get quite a bit more traffic from the page. It also helps give the public figures page more impact on those who see it. The paragraph should be whatever you would like journalists to see when they look at the page, since news reporters use that to write stories about the pledge, and occasionally contact public figures who took the pledge based on the paragraph they provide. Likewise, private citizens who look at that page use the paragraphs to evaluate and decide which public figures to follow. You can send back an edited version of the paragraph if you wish, along with your photograph.</p>
                     <p></p>
-                    <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
-                    <p></p>
-                    <ul>
-                        <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
-                        <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
-                        <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
-                        <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
-                        <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
-                        <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
-                        <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, which are about the pledge in particular, and the more broad <a href="http://intentionalinsights.org/category/rational_politics/">political-themed blogs</a> on the website of Intentional Insights.</li>
-                        <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
-                        <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
-                    </ul>
+                    <p>To learn more about the Pro-Truth Pledge and the 501(c)3 nonpartisan educational nonprofit that runs it, <a href="http://intentionalinsights.org/">Intentional Insights</a>, you are welcome to read <a href="https://docs.google.com/document/d/19dfGwyVJWbgszaKedMMCpuM_PJD8M7oOIcSzTKq2d6c/edit?usp=sharing">this link</a> with information about it. Also, consider getting involved with the <b>Pro-Truth Pledge community</b>. Our main collaborative venue is Facebook. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Then, please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for Intentional Insights. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. The Facebook group for Global Pro-Truth Pledge-oriented activities also has links out to local groups which you might be interested in joining in your area. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</p>
                     <p></p>
                     <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
                     <p></p>
-                    <p>Please let me know any questions you might have. Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
+                    <p>Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
                     <p></p>
                     <p>Truthfully Yours,</p>
                     <p></p>
@@ -129,98 +207,17 @@ if (!function_exists("ptp_pledge")) {
                     <p>Unsubscribe: This is a confirmation email. Future emails will include an unsubscribe link.</p>
                     <?php $html = ob_get_clean();
                     wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
-                } else { //Opted Out
-                    $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Confirmation of taking the Pro-Truth Pledge";
-                    ob_start(); ?>
-                    <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
-                    <p></p>
-                    <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). We are glad that you want to fight lies and promote truth in politics and other areas of public discourse! </p>
-                    <p></p>
-                    <p>This email is to confirm you took the pledge, but since you indicated you do not want to receive notifications, we will not send you any more emails. If you change your mind, you can always sign up for our newsletter at <a href="http://eepurl.com/cVFxxv">this link</a>. Signing up to the newsletter is valuable to incentivize politicians and other public figures to take the pledge, as they will see that our communication reaches more people, and thus has a stronger impact on the public discourse.</p>
-                    <p></p>
-                    <p>You have already done something really important by taking the pledge, so thanks for that! Here are some <b><u>quick things you can do to fight lies and promote truth</b></u>: </p>
-                    <p></p>
-                    <ul>
-                        <li>The first thing to do is post on social media about taking the pledge. You can use this Facebook <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse">sharer link</a>, this <a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge">Twitter sharer link</a>, this LinkedIn <a href="https://www.linkedin.com/cws/share?token&amp;isFramed=false&amp;url=https%3A%2F%2Fwww.protruthpledge.org%2F">sharer link</a>, and this Reddit <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.protruthpledge.org%2F&amp;resubmit=true&amp;title=">sharer link</a> do so. If you are active on other social media, you can share it there as well using the link to the <a href="https://www.protruthpledge.org/">Pro-Truth Pledge website</a>. </li>
-                        <li>Next, please read <a href="https://www.protruthpledge.org/pro-truth-pledge-on-social-media/">through this blog</a> on enacting the pledge on social media, and follow the strategies there. Model the behavior you want to see in the world!</li>
-                        <li>Then, please get involved with the Pro-Truth Pledge social media community. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for <a href="http://intentionalinsights.org/">Intentional Insights</a> (InIn), the organization that runs the Pro-Truth Pledge project. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> specifically for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. Look at the groups listed <a href="https://www.facebook.com/pg/ProTruthPledge/groups/?ref=page_internal">here</a> to see if there is a local PTP Facebook group in your area, and join that. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</li>
-                        <li>After that, please click “like” and “follow” on the <a href="https://www.facebook.com/ProTruthPledge/">official Facebook page</a> of the Pro-Truth Pledge, and also the <a href="https://www.facebook.com/intentionalinsights/">official page</a> of Intentional Insights (InIn), the nonpartisan educational 501(c)3 nonprofit running the Pro-Truth Pledge project. Please “follow” the <a href="https://twitter.com/protruthpledge">Twitter account</a> of the Pro-Truth Pledge and the <a href="https://twitter.com/intentinsights">Twitter account</a> of Intentional Insights. Also, “follow” the <a href="https://www.linkedin.com/company/25068392/">LinkedIn page</a> of the Pro-Truth Pledge, and the <a href="https://www.linkedin.com/company/10043566/">LinkedIn page</a> of Intentional Insights. If you are active on other social media, please take a look at the <a href="http://intentionalinsights.org/">home page</a> of Intentional Insights to see other social media you can follow.</li>
-                        <li>Email about the pledge to friends and family, and pitch it to public figures, adapting <a href="https://drive.google.com/drive/folders/0B34f-fPTUdPHWDZjWUJKMENpbWM">these email templates</a> to your needs.</li>
-                        <li>Purchase and wear <a href="https://www.protruthpledge.org/merchandise/">PTP-themed merchandise</a> to spread the word.</li>
-                        <li>Read <a href="https://www.protruthpledge.org/blog/">the blogs</a> on the PTP website, especially <a href="https://www.protruthpledge.org/category/activism/">these activism-themed blogs</a>, about the pledge, and also more broad rational politics-themed blog on <a href="http://intentionalinsights.org/category/rational_politics/">this section</a> of the Intentional Insights website.</li>
-                        <li><b>Volunteering</b>: We have a variety of activities available for you to help via contributing your time, described in our volunteering survey at <a href="https://docs.google.com/a/intentionalinsights.org/forms/d/e/1FAIpQLSdZdQk6lxGEqjPqEEFzEPbRCGs_hES1LhxhAZttpP053zShHw/viewform?c=0&amp;w=1">this link</a>: please fill it out and I will get back to you shortly with volunteer opportunities.</li>
-                        <li><b>Donations</b>: Support the fight against fake news and deception financially through contributing to <a href="http://intentionalinsights.org/">Intentional Insights</a>, the US-based 501(c)(3) educational nonprofit organization that runs the Pro-Truth Pledge. You can make a donation at <a href="http://intentionalinsights.org/donate/">this link</a>, or or by writing a check to Intentional Insights and mailing it to 450 Wetmore road, Columbus, OH, 43214: all donations are tax-deductible for any income you earned in the US.</li>
-                    </ul>
-                    <p></p>
-                    <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
-                    <p></p>
-                    <p>Please let me know any questions you might have. We will not send you any more emails, unless you sign up for our newsletter at <a href="http://eepurl.com/cVFxxv">this link</a>. Please let me know any questions you might have. Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
-                    <p></p>
-                    <p>Truthfully Yours,</p>
-                    <p></p>
-                    <p>Gleb</p>
-                    <p></p>
-                    <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
-                    <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
-                    <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
-                    <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
-                    <p>Unsubscribe: This is just a confirmation email. There will be no future emails. There is no need to unsubscribe.</p>
-                    <?php $html = ob_get_clean();
-                    wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
                 }
-            } else { //Public Figures
-                $emailSubject = $_POST["fName"] . " " . $_POST["lName"] . ", Thanks for Taking the Pro-Truth Pledge";
-                ob_start(); ?>
-                <p>Dear <?php echo $_POST["fName"] . " " . $_POST["lName"]; ?>,</p>
-                <p></p>
-                <p>Thanks for taking the <a href="http://protruthpledge.org">Pro-Truth Pledge</a> (PTP). Glad that you as a public figure want to fight lies and promote truth in politics and other areas of public discourse!</p>
-                <p> </p>
-                <p>Here is <b>something you can do immediately </b>to help spread the message about fighting lies and protecting truth<b> </b>and also help you get the full benefit of being recognized as publicly committing to truth-oriented behaviors: please<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2FProTruthPledge.org%2F&amp;src=sdkpreparse"> post on Facebook</a> and<a href="https://twitter.com/intent/tweet?hashtags=ProTruthPledge&amp;original_referer=https%3A%2F%2Fwww.protruthpledge.org%2Ftake-the-pro-truth-pledge%2F&amp;ref_src=twsrc%5Etfw&amp;text=I%20took%20the%20Pro-Truth%20Pledge!&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2FProTruthPledge.org&amp;via=ProTruthPledge"> on Twitter</a> about taking the pledge, if you use those social media. Next, add the<a href="https://www.protruthpledge.org/website-badge-seal/"> Pro-Truth Pledge badge</a> to your website as Peter Singer did on<a href="http://www.petersinger.info/"> his website</a>. If you use Facebook, please add<a href="https://www.facebook.com/ProTruthPledge/photos/a.263914657431697.1073741828.195264327630064/264345110721985/?type=3&amp;theater"> this Facebook Frame</a> to your Facebook profile, and<a href="https://twibbon.com/support/pro-truth-pledge-2/twitter"> this Twibbon</a> to your Twitter profile if you use Twitter (please mark the Facebook Frame as "permanent" as the main point of the frame is to show others that you took the pledge and are comfortable being held publicly accountable for your words). For your LinkedIn profile, add that you are a “Signer” of the<a href="https://www.linkedin.com/company/25068392/"> Pro-Truth Pledge LinkedIn organization</a>. Click the “+” button on your experience section, put in “Signer” as title, choose “Pro-Truth Pledge” as the organization, put in your date of signing, and in the description state “I have taken the Pro-Truth Pledge at ProTruthPledge.org: please hold me accountable.” If you have other relevant social media venues, please add the same statement there. Finally, please read and take steps in<a href="https://www.protruthpledge.org/how-public-figures-can-get-maximum-benefit-from-taking-the-pro-truth-pledge/"> this blog</a> about how public figures like yourself can make the most difference in advancing the fight against fake news and political deception, while also getting the maximum benefit for their reputation of taking the PTP. </p>
-                <p> </p>
-                <p>Have you<b> filled in your full profile</b> on the<a href="https://www.protruthpledge.org/public-figures-signed-pledge/"> Pro-Truth Pledge public figures page</a>? We find that people who provide a paragraph about why they took the pledge, their photographs, and links to their online venues – websites, social media, articles about them, etc. – get quite a bit more traffic from the page. It also helps give the public figures page more impact on those who see it. The paragraph should be whatever you would like journalists to see when they look at the page, since news reporters use that to write stories about the pledge, and occasionally contact public figures who took the pledge based on the paragraph they provide. Likewise, private citizens who look at that page use the paragraphs to evaluate and decide which public figures to follow. You can send back an edited version of the paragraph if you wish, along with your photograph.</p>
-                <p></p>
-                <p>To learn more about the Pro-Truth Pledge and the 501(c)3 nonpartisan educational nonprofit that runs it, <a href="http://intentionalinsights.org/">Intentional Insights</a>, you are welcome to read <a href="https://docs.google.com/document/d/19dfGwyVJWbgszaKedMMCpuM_PJD8M7oOIcSzTKq2d6c/edit?usp=sharing">this link</a> with information about it. Also, consider getting involved with the <b>Pro-Truth Pledge community</b>. Our main collaborative venue is Facebook. Please <a href="https://www.facebook.com/glebtsipursky">extend me</a> a Facebook friend request for ease of communication and collaboration. Then, please join this <a href="https://www.facebook.com/groups/InInInsiders/">Facebook group</a> for Intentional Insights. Also join this <a href="https://www.facebook.com/groups/ProTruthPledgeAdvocates/?ref=group_header">Facebook group</a> for Pro-Truth Pledge-oriented activities, which is a smaller offshoot of the bigger Intentional Insights group. The Facebook group for Global Pro-Truth Pledge-oriented activities also has links out to local groups which you might be interested in joining in your area. Finally, join the <a href="https://www.linkedin.com/groups/12071033">PTP LinkedIn group</a>.</p>
-                <p></p>
-                <p>To learn more about the principles behind the Pro-Truth Pledge, including behavioral science-based strategies for how to determine what is true and help others accept the facts, check out <i><b><u>The Truth-Seeker’s Handbook: A Science-Based Guide</i></b></u>. This book is described in more detail at <a href="http://glebtsipursky.com/the-truth-seekers-handbook-a-science-based-guide/">this link</a> and available on Amazon.com at <a href="https://www.amazon.com/gp/product/B078429WCF/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B078429WCF&amp;linkCode=as2&amp;tag=intentinsigh-20&amp;linkId=6d0105548fcc9f38a235207516f6ed82">this link</a>.</p>
-                <p></p>
-                <p>Once again, thank you very much, it’s a pleasure to work with you to help fight lies and advance truth in our public discourse!</p>
-                <p></p>
-                <p>Truthfully Yours,</p>
-                <p></p>
-                <p>Gleb</p>
-                <p></p>
-                <p><a href="http://glebtsipursky.com/about/">Dr. Gleb Tsipursky</a></p>
-                <p>Co-Founder, <a href="https://www.protruthpledge.org/">Pro-Truth Pledge</p>
-                <p>President, <a href="http://intentionalinsights.org/">Intentional Insights</p>
-                <p>Assistant Professor, <a href="https://decisionsciences.osu.edu/people/tsipursky.1">The Ohio State University</p>
-                <p>Unsubscribe: This is a confirmation email. Future emails will include an unsubscribe link.</p>
-                <?php $html = ob_get_clean();
-                wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $html );
+
+                addToEmailList($_POST["email"], $_POST["fName"], $_POST["lName"]);
+
+                if ($_POST["category"] == "Public") {
+                    $toStep = "Address";
+                } else
+                {
+                    $toStep = "Description";
+                }
             }
-
-            addToEmailList($_POST["email"], $_POST["fName"], $_POST["lName"]);
-
-            //wp_mail( strip_tags($_POST["email"], ""), $emailSubject, $emailBody );
-
-
-            // $wpdb->insert(
-            // $pledgeDivisionsTable,
-            // array(
-            // 'pledgeId' => $pledgeId,
-            // 'divisionId' => "Test Division Id 2",
-            // 'divisionData' => "Test Division Data 2"
-            // )
-            // );
-
-            //echo "{{" . $wpdb->last_error. "}}";
-
-            if ($_POST["category"] == "Public") {
-                $toStep = "Address";
-            } else
-            {
-                $toStep = "Description";
-            }
-
         }
 
         if ( $step == "Description") {
@@ -422,6 +419,7 @@ if (!function_exists("ptp_pledge")) {
 
                 <input type="hidden" name="step" id="step" value="<?php echo $toStep; ?>" />
                 <input type="submit" name="submit_form" value="I Pledge" class="btn btn-primary"/>
+                <?php echo do_shortcode('[bws_google_captcha]'); ?>
             </form>
             <?php $html = ob_get_clean();
         }
@@ -562,7 +560,6 @@ if (!function_exists("ptp_pledge")) {
             validateAddress();
             latLongPull();
         }
-
 
         return $html;
 
